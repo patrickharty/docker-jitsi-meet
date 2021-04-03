@@ -17,4 +17,9 @@ RUN \
 
 EXPOSE 80 443
 
+COPY ./customfiles/main-enGB.json /usr/share/jitsi-meet/lang/main-enGB.json
+COPY ./customfiles/title.html /usr/share/jitsi-meet/title.html
+COPY ./customfiles/images /usr/share/jitsi-meet/images
+COPY ./customfiles/all.css /usr/share/jitsi-meet/css/all.css
+
 VOLUME ["/config", "/usr/share/jitsi-meet/transcripts"]
