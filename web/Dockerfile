@@ -21,6 +21,7 @@ COPY ./customfiles/main-enGB.json /usr/share/jitsi-meet/lang/main-enGB.json
 COPY ./customfiles/title.html /usr/share/jitsi-meet/title.html
 COPY ./customfiles/images /usr/share/jitsi-meet/images
 COPY ./customfiles/all.css /usr/share/jitsi-meet/css/all.css
-COPY ./customfiles/interface_configs.js /defaults/interface_configs.js
+COPY ./customfiles/interface_config.js /defaults/interface_config.js
+COPY ./customfiles/config.js /defaults/config.js
 
 VOLUME ["/config", "/usr/share/jitsi-meet/transcripts"]
