@@ -1,0 +1,13 @@
+Name: !Join 
+  - '-'
+  - - 'web'
+    - 'container'
+Image: !Sub ${self:custom.ecr.images.webImage}
+MemoryReservation: ${self:custom.webSoftLimit}
+Essential: true
+Cpu: ${self:custom.webCpu}
+PortMappings: ${file(./serverless/ecs/task-definitions/container-definitions/port-mappings/jitsi-web-port-map.yml)}
+Links: !Join
+  - ':'
+  - 'prosody'
+  - ${self:custom.prosodyHostName}

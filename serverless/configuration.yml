@@ -1,0 +1,6 @@
+Resources:
+  JitsiBastionSecurityGroupIngress: ${file(./serverless/ec2/security-group-ingress/jitsi-bastion-sg-ingress.yml)}
+  JitsiECSSecurityGroup: ${file(./serverless/security-groups/jitsi-ecs-sg.yml)}
+  JitsiECSCluster: ${file(./serverless/ecs/clusters/jitsi-ecs-cluster.yml)}
+  JitsiECSService: ${file(./serverless/ecs/services/jitsi-ecs-service.yml)}
+  JitsiECSTaskDefinition: ${file(./serverless/ecs/task-definitions/jitsi-ecs-task-definition.yml)}

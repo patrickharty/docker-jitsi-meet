@@ -3,7 +3,7 @@ version: '3'
 services:
     # Frontend
     web:
-        image: 132487259648.dkr.ecr.ca-central-1.amazonaws.com/lyte-jitsi-sit:web-5390-3
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${PRODUCT_NAME}-jitsi-${APP_STAGE}:web-${IMAGE_VERSION}
         restart: ${RESTART_POLICY}
         ports:
             - '${HTTP_PORT}:80'
@@ -102,7 +102,7 @@ services:
 
     # XMPP server
     prosody:
-        image: 132487259648.dkr.ecr.ca-central-1.amazonaws.com/lyte-jitsi-sit:prosody-5390-3
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${PRODUCT_NAME}-jitsi-${APP_STAGE}:prosody-${IMAGE_VERSION}
         restart: ${RESTART_POLICY}
         expose:
             - '5222'
@@ -168,7 +168,7 @@ services:
 
     # Focus component
     jicofo:
-        image: 132487259648.dkr.ecr.ca-central-1.amazonaws.com/lyte-jitsi-sit:jicofo-5390-3
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${PRODUCT_NAME}-jitsi-${APP_STAGE}:jicofo-${IMAGE_VERSION}
         restart: ${RESTART_POLICY}
         environment:
             - AUTH_TYPE
@@ -212,7 +212,7 @@ services:
 
     # Video bridge
     jvb:
-        image: 132487259648.dkr.ecr.ca-central-1.amazonaws.com/lyte-jitsi-sit:jvb-5390-3
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${PRODUCT_NAME}-jitsi-${APP_STAGE}:jvb-${IMAGE_VERSION}
         restart: ${RESTART_POLICY}
         ports:
             - '${JVB_PORT}:${JVB_PORT}/udp'

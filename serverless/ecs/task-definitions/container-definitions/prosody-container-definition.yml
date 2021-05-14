@@ -1,0 +1,9 @@
+Name: !Join 
+  - '-'
+  - - 'prosody'
+    - 'container'
+Image: !Sub ${self:custom.ecr.images.prosodyImage}
+MemoryReservation: ${self:custom.prosodySoftLimit}
+Essential: true
+Cpu: ${self:custom.prosodyCpu}
+Hostname: ${self:custom.prosodyHostName}

@@ -1,0 +1,13 @@
+Name: !Join 
+  - '-'
+  - - 'jvb'
+    - 'container'
+Image: !Sub ${self:custom.ecr.images.jvbImage}
+MemoryReservation: ${self:custom.jvbSoftLimit}
+Essential: true
+Cpu: ${self:custom.jvbCpu}
+PortMappings: ${file(./serverless/ecs/task-definitions/container-definitions/port-mappings/jitsi-jvb-port-map.yml)}
+Links: !Join
+  - ':'
+  - 'prosody'
+  - ${self:custom.prosodyHostName}

@@ -1,0 +1,81 @@
+useDotenv: true
+
+service: ${self:custom.productName}-jitsi-${self:provider.stage}
+
+frameworkVersion: "2"
+variablesResolutionMode: 20210219
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  stage: ${opt:stage}
+  region: ${​​​​​opt:region}
+  stackName: ${self:service}
+  deploymentBucket:
+    name: ${self:custom.productName}-serverless-deployments-${opt:region}
+    serverSideEncryption: AES256
+  profile: ${opt:profile}
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-scriptable-plugin
+  - serverless-deployment-bucket
+
+scriptHooks:
+    before:aws:deploy:deploy:updateStack:
+      - npm run generatePasswords
+      - npm run provisionJitsiDirectories
+      - aws ecr describe-repositories --repository-names ${self:custom.ecrRepository} --profile ${opt:profile} --output yaml-stream --no-paginate  || aws ecr create-repository --repository-name ${self:custom.ecrRepository} --profile ${opt:profile}
+      - aws ecr get-login-password --region ${opt:region} --profile ${opt:profile} | docker login --username AWS --password-stdin ${self:custom.ecrName}
+      - npm run docker:build-release
+      - docker push ${self:custom.ecr.images.baseImage.uri}
+    after:deploy:deploy:
+      - aws ecs update-service --region ${opt:region} --profile ${opt:profile} --cluster ${self:custom.ecsClusterName} --service ${self:custom.ecsServiceName} --output yaml-stream --no-paginate --force-new-deployment > NUL
+    after:remove:remove:
+      - aws ecr delete-repository --repository-name ${self:custom.ecrRepository} --region ${opt:region} --profile ${opt:profile} --output yaml-stream --no-paginate --force
+  
+custom:
+  accountId: ${env:AWS_ACCOUNT_ID}
+  productName: ${env:PRODUCT_NAME}
+  version: ${env:IMAGE_VERSION}
+  ecrName: ${self:custom.accountId}.dkr.ecr.${env:AWS_REGION}.amazonaws.com
+  ecrRepository: ${self:provider.stackName}
+  webEcrTag: ${self.custom.ecrRepository}:web-${self:custom.version}
+  prosodyEcrTag: ${self.custom.ecrRepository}:prosody-${self:custom.version}
+  jifocoEcrTag: ${self.custom.ecrRepository}:jifoco-${self:custom.version}
+  jvbEcrTag: ${self.custom.ecrRepository}:jvb-${self:custom.version}
+  ecr:
+    images:
+      webImage: ${self:custom.ecrName}/${self:custom.webEcrTag}
+      prosodyImage: ${self:custom.ecrName}/${self:custom.prosodyEcrTag}
+      jifocoImage: ${self:custom.ecrName}/${self:custom.jifocoEcrTag}
+      jvbImage: ${self:custom.ecrName}/${self:custom.jvbEcrTag}
+  ecsClusterName: ${self:provider.stackName}-Cluster
+  ecsServiceName: ${self:provider.stackName}-ECSService
+  webContainerHttpPort: ${env:WEB_CONTAINER_PORT_HTTP}
+  webContainerHttpsPort: ${env:WEB_CONTAINER_PORT_HTTPS}
+  jvbContainerUdpPort: ${env:JVB_CONTAINER_PORT_UDP}
+  jvbContainerHttpsPort: ${env:JVB_CONTAINER_PORT_HTTPS}
+  prosodyHostName: ${env:PROSODY_HOST_NAME}
+  webSoftLimit: ${env:WEB_SOFT_LIMIT}
+  prosodySoftLimit: ${env:PROSODY_SOFT_LIMIT}
+  jifocoSoftLimit: ${env:JIFOCO_SOFT_LIMIT}
+  jvbSoftLimit: ${env:JVB_SOFT_LIMIT}
+  webCpu: ${env:WEB_CPU}
+  prosodyCpu: ${env:PROSODY_CPU}
+  jifocoCpu: ${env:JIFOCO_CPU}
+  jvbCpu: ${env:JVB_CPU}    
+  dotenv:
+    logging: false
+  coreStack:
+    name: ${opt:core-stack, "${self:custom.productName}-infrastructure-core-${opt:deps-stage, self:provider.stage}"}
+    outputs:
+      vpc: !ImportValue ${self:custom.coreStack.name}-Vpc
+      bastionSecurityGroup: !ImportValue ${self:custom.coreStack.name}-BastionSecurityGroup
+      webAccessSecurityGroup: !ImportValue ${self:custom.coreStack.name}-WebAccessSecurityGroup
+      publicSubnet1: !ImportValue ${self:custom.coreStack.name}-PublicSubnet1
+      publicSubnet2: !ImportValue ${self:custom.coreStack.name}-PublicSubnet2
+
+resources:
+  - ${file(./serverless/configuration.yml)}

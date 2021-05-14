@@ -1,0 +1,8 @@
+Type: AWS::EC2::SecurityGroup
+Properties:
+  GroupName: !Sub ${AWS::StackName}-sg
+  GroupDescription: Security Group for the Jitsi instance
+  VpcId: ${self:custom.coreStack.outputs.vpc}
+  Tags:
+    - Key: Name
+      Value: !Sub ${AWS::StackName}-sg

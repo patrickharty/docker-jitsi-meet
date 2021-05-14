@@ -1,0 +1,6 @@
+- ContainerPort: ${self:custom.jvbContainerUdpPort}
+  HostPort:  ${self:custom.jvbContainerUdpPort}
+  Protocol: udp
+- ContainerPort: ${self:custom.jvbContainerHttpsPort}
+  HostPort:  ${self:custom.jvbContainerHttpsPort}
+  Protocol: tcp

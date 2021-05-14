@@ -1,0 +1,12 @@
+Name: !Join 
+  - '-'
+  - - 'jifoco'
+    - 'container'
+Image: !Sub ${self:custom.ecr.images.jifocoImage}
+MemoryReservation: ${self:custom.jifocoSoftLimit}
+Essential: true
+Cpu: ${self:custom.jifocoCpu}
+Links: !Join
+  - ':'
+  - 'prosody'
+  - ${self:custom.prosodyHostName}

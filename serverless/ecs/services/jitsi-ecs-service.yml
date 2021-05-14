@@ -1,0 +1,16 @@
+Type: AWS::ECS::Service
+Properties:
+  ServiceName: !Sub ${self:custom.ecsServiceName}
+  Cluster: !Ref JitsiECSCluster
+  DesiredCount: 1
+  LaunchType: EC2
+  TaskDefinition: !Ref JitsiECSTaskDefinition
+  NetworkConfiguration: 
+    AwsvpcConfiguration:
+      AssignPublicIp: ENABLED
+      Subnets:
+        - ${self:custom.coreStack.outputs.publicSubnet1}
+        - ${self:custom.coreStack.outputs.publicSubnet2}
+      SecurityGroups:
+        - !Ref JitsiECSSecurityGroup
+        - ${self:custom.coreStack.outputs.webAccessSecurityGroup}

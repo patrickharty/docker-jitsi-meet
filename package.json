@@ -1,0 +1,25 @@
+{
+  "name": "docker-jitsi-meet",
+  "version": "1.0.0",
+  "description": "Docker Jitsi Setup",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generatePasswords": "sh gen-passwords.sh",
+    "provisionJitsiDirectories": "npx mkdirp -p .jitsi-meet-cfg/web/letsencrypt, .jitsi-meet-cfg/transcripts, .jitsi-meet-cfg/prosody/config, .jitsi-meet-cfg/prosody/prosody-plugins-custom, .jitsi-meet-cfg/jicofo, .jitsi-meet-cfg/jvb, .jitsi-meet-cfg/jigasi, .jitsi-meet-cfg/jibri",
+    "docker:build-release": "docker-compose -f \"docker-compose.yml\" build --no-cache"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smartnd/docker-jitsi-meet.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smartnd/docker-jitsi-meet/issues"
+  },
+  "homepage": "https://github.com/smartnd/docker-jitsi-meet#readme"
+}
