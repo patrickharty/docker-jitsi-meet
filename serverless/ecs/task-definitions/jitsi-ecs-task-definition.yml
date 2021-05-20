@@ -1,0 +1,27 @@
+Type: AWS::ECS::TaskDefinition
+Properties: 
+  Memory: ${self:custom.ecs.memory}
+  Cpu: ${self:custom.ecs.cpu}
+  NetworkMode: awsvpc
+  RequiresCompatibilities:
+    - 'FARGATE'
+  TaskRoleArn: !Ref JitsiECSTaskRole
+  ExecutionRoleArn: !Ref JitsiECSTaskRole
+  Family: !Join 
+    - '-'
+    - - ${self:provider.stackName}
+      - 'TaskDefinition'
+  ContainerDefinitions:
+    - ${file(./serverless/ecs/task-definitions/container-definitions/web-container-definition.yml)}
+    - ${file(./serverless/ecs/task-definitions/container-definitions/prosody-container-definition.yml)}
+    - ${file(./serverless/ecs/task-definitions/container-definitions/jicofo-container-definition.yml)}
+    - ${file(./serverless/ecs/task-definitions/container-definitions/jvb-container-definition.yml)}
+    # - Name: !Join 
+    #   - '-'
+    #   - - ${self:provider.stage}
+    #     - ${self:custom.accountId}
+    #     - 'Container'
+    #   Image: !Sub ${self:custom.ecr.images.baseImage.uri}
+    #   PortMappings: ${file(./serverless/ecs/task-definitions/container-definitions/port-mappings/legacy-app-ecs-td-prt-map.yml)}
+    #   MountPoints: ${file(./serverless/ecs/task-definitions/container-definitions/mount-points/legacy-app-ecs-td-mnt-pts.yml)}
+  #Volumes: ${file(./serverless/ecs/task-definitions/volumes/legacy-app-ecs-td-volumes.yml)}

@@ -1,0 +1,78 @@
+Name: ${self:custom.jicofoContainerName}
+DependsOn:
+  - Condition: START
+    ContainerName: ${self:custom.prosodyContainerName}
+Image: !Sub ${self:custom.ecr.images.jicofoImage}
+MemoryReservation: ${self:custom.jicofoSoftLimit}
+LogConfiguration:
+  LogDriver: awslogs
+  Options:
+    awslogs-group: !Ref JitsiECSLogGroup
+    awslogs-region: !Ref AWS::Region
+    awslogs-stream-prefix: ecs-jicofo
+Essential: true
+Cpu: ${self:custom.jicofoCpu}
+Environment:
+  - name: ENABLE_CODEC_H264
+    value: ''
+  - name: ENABLE_RECORDING
+    value: ''
+  - name: ENABLE_SCTP
+    value: ''
+  - name: JICOFO_COMPONENT_SECRET
+    value: ${env:JICOFO_COMPONENT_SECRET}
+  - name: JICOFO_AUTH_USER
+    value: ${env:JICOFO_AUTH_USER}
+  - name: JICOFO_AUTH_PASSWORD
+    value: ${env:JICOFO_AUTH_PASSWORD}
+  - name: JICOFO_ENABLE_BRIDGE_HEALTH_CHECKS
+    value: ''
+  - name: JICOFO_CONF_INITIAL_PARTICIPANT_WAIT_TIMEOUT
+    value: ''
+  - name: JICOFO_CONF_SINGLE_PARTICIPANT_TIMEOUT
+    value: ''
+  - name: JICOFO_ENABLE_HEALTH_CHECKS
+    value: ''
+  - name: JICOFO_SHORT_ID
+    value: ''
+  - name: JICOFO_RESERVATION_ENABLED 
+    value: ''
+  - name: JICOFO_RESERVATION_REST_BASE_URL 
+    value: ''
+  - name: JIBRI_BREWERY_MUC
+    value: ${env:JIBRI_BREWERY_MUC}
+  - name: JIBRI_REQUEST_RETRIES
+    value: ''
+  - name: JIBRI_PENDING_TIMEOUT
+    value: ${env:JIBRI_PENDING_TIMEOUT}
+  - name: JIGASI_BREWERY_MUC
+    value: ${env:JIGASI_BREWERY_MUC}
+  - name: JIGASI_SIP_URI
+    value: ''
+  - name: JVB_BREWERY_MUC
+    value: ${env:JVB_BREWERY_MUC}
+  - name: MAX_BRIDGE_PARTICIPANTS
+    value: ''
+  - name: OCTO_BRIDGE_SELECTION_STRATEGY
+    value: ''
+  - name: TZ
+    value: ${env:TZ}
+  - name: XMPP_DOMAIN
+    value: ${env:XMPP_DOMAIN}
+  - name: XMPP_AUTH_DOMAIN
+    value: ${env:XMPP_AUTH_DOMAIN}
+  - name: XMPP_INTERNAL_MUC_DOMAIN
+    value: ${env:XMPP_INTERNAL_MUC_DOMAIN}
+  - name: XMPP_MUC_DOMAIN
+    value: ${env:XMPP_MUC_DOMAIN}
+  - name: XMPP_SERVER
+    value: ${env:XMPP_SERVER}
+  
+  
+
+            
+# Links: 
+#   - !Join
+#     - ':'
+#     - - ${self:custom.prosodyContainerName}
+#       - ${self:custom.prosodyHostName}

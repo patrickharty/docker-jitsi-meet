@@ -1,0 +1,8 @@
+Type: AWS::EC2::SecurityGroupIngress
+Properties:
+  Description: Allows inbound traffic from the bastion security group.
+  GroupId: !Ref JitsiECSSecurityGroup
+  IpProtocol: tcp
+  FromPort: 22
+  ToPort: 22
+  SourceSecurityGroupId: ${self:custom.coreStack.outputs.bastionSecurityGroup}

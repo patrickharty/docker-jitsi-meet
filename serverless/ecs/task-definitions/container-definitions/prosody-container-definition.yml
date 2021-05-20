@@ -1,0 +1,118 @@
+Name: ${self:custom.prosodyContainerName}
+Image: !Sub ${self:custom.ecr.images.prosodyImage}
+MemoryReservation: ${self:custom.prosodySoftLimit}
+Essential: true
+LogConfiguration:
+  LogDriver: awslogs
+  Options:
+    awslogs-group: !Ref JitsiECSLogGroup
+    awslogs-region: !Ref AWS::Region
+    awslogs-stream-prefix: ecs-prosody
+Cpu: ${self:custom.prosodyCpu}
+PortMappings: ${file(./serverless/ecs/task-definitions/container-definitions/port-mappings/jitsi-prosody-port-map.yml)}
+Environment:
+  - name: AUTH_TYPE
+    value: ''
+  - name: ENABLE_AUTH     
+    value: ''
+  - name: ENABLE_GUESTS
+    value: ''
+  - name: ENABLE_LOBBY    
+    value: ${env:ENABLE_LOBBY}
+  - name: ENABLE_XMPP_WEBSOCKET
+    value: ${env:ENABLE_XMPP_WEBSOCKET}  
+  - name: GLOBAL_MODULES
+    value: ''
+  - name: GLOBAL_CONFIG
+    value: ''
+  - name: LDAP_URL
+    value: ''
+  - name: LDAP_BASE
+    value: ''
+  - name: LDAP_BINDDN
+    value: ''
+  - name: LDAP_BINDPW
+    value: ''
+  - name: LDAP_FILTER
+    value: ''
+  - name: LDAP_AUTH_METHOD
+    value: ''
+  - name: LDAP_VERSION
+    value: ''
+  - name: LDAP_USE_TLS
+    value: ''
+  - name: LDAP_TLS_CIPHERS
+    value: ''
+  - name: LDAP_TLS_CHECK_PEER
+    value: ''
+  - name: LDAP_TLS_CACERT_FILE
+    value: ''
+  - name: LDAP_TLS_CACERT_DIR
+    value: ''
+  - name: LDAP_START_TLS
+    value: ''  
+  - name: XMPP_DOMAIN
+    value: ${env:XMPP_DOMAIN}
+  - name: XMPP_AUTH_DOMAIN
+    value: ${env:XMPP_AUTH_DOMAIN}
+  - name: XMPP_GUEST_DOMAIN
+    value: ${env:XMPP_GUEST_DOMAIN}
+  - name: XMPP_MUC_DOMAIN
+    value: ${env:XMPP_MUC_DOMAIN}
+  - name: XMPP_INTERNAL_MUC_DOMAIN
+    value: ${env:XMPP_INTERNAL_MUC_DOMAIN}
+  - name: XMPP_MODULES
+    value: ''
+  - name: XMPP_MUC_MODULES
+    value: ''
+  - name: XMPP_INTERNAL_MUC_MODULES
+    value: ''
+  - name: XMPP_RECORDER_DOMAIN
+    value: ''
+  - name: XMPP_CROSS_DOMAIN
+    value: ''
+  - name: JICOFO_COMPONENT_SECRET
+    value: ${env:JICOFO_COMPONENT_SECRET}
+  - name: JICOFO_AUTH_USER
+    value: ${env:JICOFO_AUTH_USER}
+  - name: JICOFO_AUTH_PASSWORD
+    value: ${env:JICOFO_AUTH_PASSWORD}
+  - name: JVB_AUTH_USER
+    value: ${env:JVB_AUTH_USER}
+  - name: JVB_AUTH_PASSWORD
+    value: ${env:JVB_AUTH_PASSWORD}
+  - name: JIGASI_XMPP_USER
+    value: ${env:JIGASI_XMPP_USER}
+  - name: JIGASI_XMPP_PASSWORD
+    value: ${env:JIGASI_XMPP_PASSWORD}
+  - name: JIBRI_XMPP_USER
+    value: ${env:JIBRI_XMPP_USER}
+  - name: JIBRI_XMPP_PASSWORD
+    value: ${env:JIBRI_XMPP_PASSWORD}
+  - name: JIBRI_RECORDER_USER
+    value: ${env:JIBRI_RECORDER_USER}
+  - name: JIBRI_RECORDER_PASSWORD
+    value: ${env:JIBRI_RECORDER_PASSWORD}
+  - name: JWT_APP_ID
+    value: ''
+  - name: JWT_APP_SECRET
+    value: ''
+  - name: JWT_ACCEPTED_ISSUERS
+    value: ''
+  - name: JWT_ACCEPTED_AUDIENCES
+    value: ''
+  - name: JWT_ASAP_KEYSERVER
+    value: ''
+  - name: JWT_ALLOW_EMPTY
+    value: ''
+  - name: JWT_AUTH_TYPE 
+    value: ''
+  - name: JWT_TOKEN_AUTH_MODULE
+    value: ''
+  - name: LOG_LEVEL
+    value: ''
+  - name: PUBLIC_URL
+    value: ${env:PUBLIC_URL}
+  - name: TZ
+    value: ${env:TZ}
+#Hostname: ${self:custom.prosodyHostName}

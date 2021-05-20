@@ -1,0 +1,7 @@
+Type: AWS::ElasticLoadBalancingV2::TargetGroup
+Properties:
+  Port: 80
+  Protocol: HTTP
+  TargetType: ip # required for awsvpc
+  VpcId: ${self:custom.coreStack.outputs.vpc}
+  #HealthCheckPath: '/site.webmanifest'

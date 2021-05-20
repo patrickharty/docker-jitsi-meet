@@ -1,0 +1,97 @@
+useDotenv: true
+
+service: ${self:custom.productName}-jitsi-${self:provider.stage}
+
+frameworkVersion: "2"
+variablesResolutionMode: 20210219
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  stage: ${opt:stage}
+  region: ${​​​​​opt:region}
+  stackName: ${self:service}
+  deploymentBucket:
+    name: ${self:custom.productName}-serverless-deployments-${opt:region}
+    serverSideEncryption: AES256
+  profile: ${opt:aws-profile}
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-scriptable-plugin
+  - serverless-deployment-bucket
+  
+custom:
+  scriptHooks:
+    before:aws:deploy:deploy:updateStack:
+      - npm run generatePasswords
+      - npm run provisionJitsiDirectories
+      - aws ecr describe-repositories --repository-names ${self:custom.ecrRepository} --profile ${opt:aws-profile} --output yaml-stream --no-paginate  || aws ecr create-repository --repository-name ${self:custom.ecrRepository} --profile ${opt:aws-profile}
+      - aws ecr get-login-password --region ${opt:region} --profile ${opt:aws-profile} | docker login --username AWS --password-stdin ${self:custom.ecrName}
+      - npm run docker:build-base && npm run docker:build-lyte
+      - docker push ${self:custom.ecr.images.webImage}
+      - docker push ${self:custom.ecr.images.prosodyImage}
+      - docker push ${self:custom.ecr.images.jvbImage}
+      - docker push ${self:custom.ecr.images.jicofoImage}
+    after:deploy:deploy:
+      - aws ecs update-service --region ${opt:region} --profile ${opt:aws-profile} --cluster ${self:custom.ecsClusterName} --service ${self:custom.ecsServiceName} --output yaml-stream --no-paginate --force-new-deployment > NUL
+    after:remove:remove:
+      - aws ecr delete-repository --repository-name ${self:custom.ecrRepository} --region ${opt:region} --profile ${opt:aws-profile} --output yaml-stream --no-paginate --force
+  accountId: ${env:AWS_ACCOUNT_ID}
+  productName: ${env:PRODUCT_NAME}
+  version: ${env:IMAGE_VERSION}
+  ecrName: ${self:custom.accountId}.dkr.ecr.${env:AWS_REGION}.amazonaws.com
+  ecrRepository: ${self:provider.stackName}
+  webEcrTag: ${self:custom.ecrRepository}:web-${self:custom.version}
+  prosodyEcrTag: ${self:custom.ecrRepository}:prosody-${self:custom.version}
+  jicofoEcrTag: ${self:custom.ecrRepository}:jicofo-${self:custom.version}
+  jvbEcrTag: ${self:custom.ecrRepository}:jvb-${self:custom.version}
+  certificateArn: ${env:SERVERLESS_AWS_ALB_CERTIFICATE_ARN}
+  ecr:
+    images:
+      webImage: ${self:custom.ecrName}/${self:custom.webEcrTag}
+      prosodyImage: ${self:custom.ecrName}/${self:custom.prosodyEcrTag}
+      jicofoImage: ${self:custom.ecrName}/${self:custom.jicofoEcrTag}
+      jvbImage: ${self:custom.ecrName}/${self:custom.jvbEcrTag}
+  ecsClusterName: ${self:provider.stackName}-Cluster
+  ecsServiceName: ${self:provider.stackName}-ECSService
+  webContainerHttpPort: ${env:WEB_CONTAINER_PORT_HTTP}
+  webContainerHttpsPort: ${env:WEB_CONTAINER_PORT_HTTPS}
+  jvbContainerUdpPort: ${env:JVB_CONTAINER_PORT_UDP}
+  jvbContainerHttpsPort: ${env:JVB_CONTAINER_PORT_HTTPS}
+  prosodyContainerTcpPort1: ${env:PROSODY_CONTAINER_PORT_TCP_1}
+  prosodyContainerTcpPort2: ${env:PROSODY_CONTAINER_PORT_TCP_2}
+  prosodyContainerTcpPort3: ${env:PROSODY_CONTAINER_PORT_TCP_3}
+  prosodyHostName: ${env:PROSODY_HOST_NAME}
+  webSoftLimit: ${env:WEB_SOFT_LIMIT}
+  prosodySoftLimit: ${env:PROSODY_SOFT_LIMIT}
+  jicofoSoftLimit: ${env:JIFOCO_SOFT_LIMIT}
+  jvbSoftLimit: ${env:JVB_SOFT_LIMIT}
+  webCpu: ${env:WEB_CPU}
+  prosodyCpu: ${env:PROSODY_CPU}
+  jicofoCpu: ${env:JIFOCO_CPU}
+  jvbCpu: ${env:JVB_CPU} 
+  webContainerName: web
+  prosodyContainerName: prosody
+  jvbContainerName: jvb
+  jicofoContainerName: jicofo
+  ecs:
+    memory: ${env:SERVERLESS_AWS_ECS_TD_MEMORY}
+    cpu: ${env:SERVERLESS_AWS_ECS_TD_CPU}
+  ec2:
+    instanceType: ${env:EC2_INSTANCE_TYPE, "t3.medium"}
+    keyName: ${self:custom.productName}-bastion-${opt:deps-stage, self:provider.stage}
+  dotenv:
+    logging: false
+  coreStack:
+    name: ${opt:core-stack, "${self:custom.productName}-infrastructure-core-${opt:deps-stage, self:provider.stage}"}
+    outputs:
+      vpc: !ImportValue ${self:custom.coreStack.name}-Vpc
+      bastionSecurityGroup: !ImportValue ${self:custom.coreStack.name}-BastionSecurityGroup
+      webAccessSecurityGroup: !ImportValue ${self:custom.coreStack.name}-WebAccessSecurityGroup
+      publicSubnet1: !ImportValue ${self:custom.coreStack.name}-PublicSubnet1
+      publicSubnet2: !ImportValue ${self:custom.coreStack.name}-PublicSubnet2
+
+resources:
+  - ${file(./serverless/configuration.yml)}

@@ -1,0 +1,14 @@
+Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+Properties:
+  IpAddressType: ipv4
+  Name: !Join
+    - '-'
+    - - ${self:provider.stackName}
+      - 'LoadBalancer'
+  Scheme: internet-facing
+  SecurityGroups:
+    - ${self:custom.coreStack.outputs.webAccessSecurityGroup}
+  Subnets:
+    - ${self:custom.coreStack.outputs.publicSubnet1}
+    - ${self:custom.coreStack.outputs.publicSubnet2}
+  Type: application

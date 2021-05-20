@@ -1,0 +1,196 @@
+Name: ${self:custom.webContainerName}
+Image: !Sub ${self:custom.ecr.images.webImage}
+DependsOn:
+  - Condition: START
+    ContainerName: ${self:custom.prosodyContainerName}
+MemoryReservation: ${self:custom.webSoftLimit}
+LogConfiguration:
+  LogDriver: awslogs
+  Options:
+    awslogs-group: !Ref JitsiECSLogGroup
+    awslogs-region: !Ref AWS::Region
+    awslogs-stream-prefix: ecs-web
+Essential: true
+Cpu: ${self:custom.webCpu}
+PortMappings: ${file(./serverless/ecs/task-definitions/container-definitions/port-mappings/jitsi-web-port-map.yml)}
+Environment:
+  - name: ENABLE_LETSENCRYPT
+    value: ${env:ENABLE_LETSENCRYPT}
+  - name: ENABLE_HTTP_REDIRECT
+    value: ${env:ENABLE_HTTP_REDIRECT}
+  - name: ENABLE_HSTS
+    value: ''
+  - name: ENABLE_XMPP_WEBSOCKET
+    value: ${env:ENABLE_XMPP_WEBSOCKET}
+  - name: DISABLE_HTTPS
+    value: ''
+  - name: LETSENCRYPT_DOMAIN
+    value: ${env:LETSENCRYPT_DOMAIN}
+  - name: LETSENCRYPT_EMAIL
+    value: ${env:LETSENCRYPT_EMAIL}
+  - name: LETSENCRYPT_USE_STAGING
+    value: ''
+  - name: PUBLIC_URL
+    value: ${env:PUBLIC_URL}
+  - name: TZ
+    value: ${env:TZ}
+  - name: AMPLITUDE_ID
+    value: ''
+  - name: ANALYTICS_SCRIPT_URLS
+    value: ''
+  - name: ANALYTICS_WHITELISTED_EVENTS
+    value: ''
+  - name: BRIDGE_CHANNEL
+    value: ''
+  - name: CALLSTATS_CUSTOM_SCRIPT_URL
+    value: ''
+  - name: CALLSTATS_ID
+    value: ''
+  - name: CALLSTATS_SECRET
+    value: ''
+  - name: CHROME_EXTENSION_BANNER_JSON
+    value: ''
+  - name: CONFCODE_URL
+    value: ''
+  - name: CONFIG_EXTERNAL_CONNECT
+    value: ''
+  - name: DEPLOYMENTINFO_ENVIRONMENT
+    value: ''
+  - name: DEPLOYMENTINFO_ENVIRONMENT_TYPE
+    value: ''
+  - name: DEPLOYMENTINFO_USERREGION
+    value: ''
+  - name: DIALIN_NUMBERS_URL
+    value: ''
+  - name: DIALOUT_AUTH_URL
+    value: ''
+  - name: DIALOUT_CODES_URL
+    value: ''
+  - name: DROPBOX_APPKEY
+    value: ''
+  - name: DROPBOX_REDIRECT_URI
+    value: ''
+  - name: DYNAMIC_BRANDING_URL
+    value: ''
+  - name: ENABLE_AUDIO_PROCESSING
+    value: ''
+  - name: ENABLE_AUTH
+    value: ''
+  - name: ENABLE_CALENDAR
+    value: ''
+  - name: ENABLE_FILE_RECORDING_SERVICE
+    value: ''
+  - name: ENABLE_FILE_RECORDING_SERVICE_SHARING
+    value: ''
+  - name: ENABLE_GUESTS
+    value: ''
+  - name: ENABLE_IPV6
+    value: ''
+  - name: ENABLE_LIPSYNC
+    value: ''
+  - name: ENABLE_NO_AUDIO_DETECTION
+    value: ''
+  - name: ENABLE_P2P
+    value: ''
+  - name: ENABLE_PREJOIN_PAGE
+    value: ''
+  - name: ENABLE_WELCOME_PAGE
+    value: ${env:ENABLE_WELCOME_PAGE}
+  - name: ENABLE_CLOSE_PAGE
+    value: ${env:ENABLE_CLOSE_PAGE}
+
+  - name: ENABLE_RECORDING
+    value: ''
+  - name: ENABLE_REMB
+    value: ''
+  - name: ENABLE_REQUIRE_DISPLAY_NAME
+    value: ''
+  - name: ENABLE_SIMULCAST
+    value: ''
+  - name: ENABLE_STATS_ID
+    value: ''
+  - name: ENABLE_STEREO
+    value: ''
+  - name: ENABLE_SUBDOMAINS
+    value: ''
+  - name: ENABLE_TALK_WHILE_MUTED
+    value: ''
+  - name: ENABLE_TCC
+    value: ''
+  - name: ENABLE_TRANSCRIPTIONS
+    value: ''
+  - name: ETHERPAD_PUBLIC_URL
+    value: ''
+  - name: ETHERPAD_URL_BASE
+    value: ''
+  - name: GOOGLE_ANALYTICS_ID
+    value: ''
+  - name: GOOGLE_API_APP_CLIENT_ID
+    value: ''
+  - name: INVITE_SERVICE_URL
+    value: ''
+  - name: JICOFO_AUTH_USER
+    value: ${env:JICOFO_AUTH_USER}
+
+  - name: MATOMO_ENDPOINT
+    value: ''
+  - name: MATOMO_SITE_ID
+    value: ''
+  - name: MICROSOFT_API_APP_CLIENT_ID
+    value: ''
+  - name: NGINX_RESOLVER
+    value: ''
+  - name: NGINX_WORKER_PROCESSES
+    value: ''
+  - name: NGINX_WORKER_CONNECTIONS
+    value: ''
+  - name: PEOPLE_SEARCH_URL
+    value: ''
+  - name: RESOLUTION
+    value: ''
+  - name: RESOLUTION_MIN
+    value: ''
+  - name: RESOLUTION_WIDTH
+    value: ''
+  - name: RESOLUTION_WIDTH_MIN
+    value: ''
+  - name: START_AUDIO_ONLY
+    value: ''
+  - name: START_AUDIO_MUTED
+    value: ''
+  - name: DISABLE_AUDIO_LEVELS
+    value: ''
+  - name: ENABLE_NOISY_MIC_DETECTION
+    value: ''
+  - name: START_BITRATE
+    value: ''
+  - name: DESKTOP_SHARING_FRAMERATE_MIN
+    value: ''
+  - name: DESKTOP_SHARING_FRAMERATE_MAX
+    value: ''
+  - name: START_VIDEO_MUTED
+    value: ''
+  - name: TESTING_CAP_SCREENSHARE_BITRATE
+    value: ''
+  - name: TESTING_OCTO_PROBABILITY
+    value: ''
+
+  - name: XMPP_AUTH_DOMAIN
+    value: ${env:XMPP_AUTH_DOMAIN}
+  - name: XMPP_BOSH_URL_BASE
+    value: ${env:XMPP_BOSH_URL_BASE}
+  - name: XMPP_DOMAIN
+    value: ${env:XMPP_DOMAIN}
+  - name: XMPP_GUEST_DOMAIN
+    value: ${env:XMPP_GUEST_DOMAIN}
+  - name: XMPP_MUC_DOMAIN
+    value: ${env:XMPP_MUC_DOMAIN}
+  - name: XMPP_RECORDER_DOMAIN
+    value: ${env:XMPP_RECORDER_DOMAIN}
+  - name: TOKEN_AUTH_URL
+    value: ''
+# Links: 
+#   - !Join
+#     - ':'
+#     - - ${self:custom.prosodyContainerName}
+#       - ${self:custom.prosodyHostName}

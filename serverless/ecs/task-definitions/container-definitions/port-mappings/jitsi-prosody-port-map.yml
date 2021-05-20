@@ -1,0 +1,9 @@
+- ContainerPort: ${self:custom.prosodyContainerTcpPort1}
+  HostPort:  ${self:custom.prosodyContainerTcpPort1}
+  Protocol: tcp
+- ContainerPort: ${self:custom.prosodyContainerTcpPort2}
+  HostPort:  ${self:custom.prosodyContainerTcpPort2}
+  Protocol: tcp
+- ContainerPort: ${self:custom.prosodyContainerTcpPort3}
+  HostPort:  ${self:custom.prosodyContainerTcpPort3}
+  Protocol: tcp

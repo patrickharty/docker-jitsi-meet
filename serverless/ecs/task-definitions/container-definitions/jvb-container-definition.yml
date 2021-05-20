@@ -1,0 +1,56 @@
+Name: ${self:custom.jvbContainerName}
+DependsOn:
+  - Condition: START
+    ContainerName: ${self:custom.prosodyContainerName}
+Image: !Sub ${self:custom.ecr.images.jvbImage}
+MemoryReservation: ${self:custom.jvbSoftLimit}
+Essential: false
+Cpu: ${self:custom.jvbCpu}
+LogConfiguration:
+  LogDriver: awslogs
+  Options:
+    awslogs-group: !Ref JitsiECSLogGroup
+    awslogs-region: !Ref AWS::Region
+    awslogs-stream-prefix: ecs-jvb
+PortMappings: ${file(./serverless/ecs/task-definitions/container-definitions/port-mappings/jitsi-jvb-port-map.yml)}
+Environment:
+  - name: DOCKER_HOST_ADDRESS
+    value: ''
+  - name: XMPP_AUTH_DOMAIN
+    value: ${env:XMPP_AUTH_DOMAIN}
+  - name: XMPP_INTERNAL_MUC_DOMAIN
+    value: ${env:XMPP_INTERNAL_MUC_DOMAIN}
+  - name: XMPP_SERVER
+    value: ${env:XMPP_SERVER}
+  - name: JVB_AUTH_USER
+    value: ${env:JVB_AUTH_USER}
+  - name: JVB_AUTH_PASSWORD
+    value: ${env:JVB_AUTH_PASSWORD}
+  - name: JVB_BREWERY_MUC
+    value: ${env:JVB_BREWERY_MUC}
+  - name: JVB_PORT
+    value: ${env:JVB_PORT}
+  - name: JVB_TCP_HARVESTER_DISABLED
+    value: ${env:JVB_TCP_HARVESTER_DISABLED}
+  - name: JVB_TCP_PORT
+    value: ${env:JVB_TCP_PORT}
+  - name: JVB_TCP_MAPPED_PORT
+    value: ${env:JVB_TCP_MAPPED_PORT}
+  - name: JVB_STUN_SERVERS
+    value: ${env:JVB_STUN_SERVERS}
+  - name: JVB_ENABLE_APIS
+    value: ''
+  - name: JVB_WS_DOMAIN
+    value: ''
+  - name: JVB_WS_SERVER_ID
+    value: ''
+  - name: PUBLIC_URL
+    value: ${env:PUBLIC_URL}
+  - name: TZ
+    value: ${env:TZ}
+  
+# Links: 
+#   - !Join
+#     - ':'
+#     - - ${self:custom.prosodyContainerName}
+#       - ${self:custom.prosodyHostName}

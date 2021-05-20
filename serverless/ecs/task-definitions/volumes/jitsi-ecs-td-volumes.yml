@@ -1,0 +1,12 @@
+- Name: ${env:SERVERLESS_AWS_ECS_TD_LOG_VOLUME_NAME}
+  EFSVolumeConfiguration:
+    FileSystemId: !Ref LegacyAppLogEFSFileSystem
+    TransitEncryption: ENABLED
+- Name: ${env:SERVERLESS_AWS_ECS_TD_DATA_VOLUME_NAME}
+  EFSVolumeConfiguration:
+    FileSystemId: ${self:custom.dataStack.outputs.dataVolume}
+    TransitEncryption: ENABLED
+- Name: ${env:SERVERLESS_AWS_ECS_TD_SESSION_VOLUME_NAME}
+  EFSVolumeConfiguration:
+    FileSystemId: !Ref LegacyAppSessionEFSFileSystem
+    TransitEncryption: ENABLED

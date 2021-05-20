@@ -1,0 +1,6 @@
+- ContainerPort: ${self:custom.webContainerHttpPort}
+  HostPort:  ${self:custom.webContainerHttpPort}
+  Protocol: tcp
+- ContainerPort: ${self:custom.webContainerHttpsPort}
+  HostPort:  ${self:custom.webContainerHttpsPort}
+  Protocol: tcp

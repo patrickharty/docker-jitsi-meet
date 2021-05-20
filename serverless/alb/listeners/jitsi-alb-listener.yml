@@ -1,0 +1,10 @@
+Type: AWS::ElasticLoadBalancingV2::Listener
+Properties:
+  LoadBalancerArn: !Ref JitsiALBLoadBalancer
+  Port: 443
+  Protocol: HTTPS
+  Certificates:
+    - CertificateArn: ${self:custom.certificateArn}
+  DefaultActions: 
+    - TargetGroupArn: !Ref JitsiALBTargetGroup
+      Type: forward
