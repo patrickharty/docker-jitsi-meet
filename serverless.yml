@@ -29,7 +29,7 @@ custom:
       - npm run provisionJitsiDirectories
       - aws ecr describe-repositories --repository-names ${self:custom.ecrRepository} --profile ${opt:aws-profile} --output yaml-stream --no-paginate  || aws ecr create-repository --repository-name ${self:custom.ecrRepository} --profile ${opt:aws-profile}
       - aws ecr get-login-password --region ${opt:region} --profile ${opt:aws-profile} | docker login --username AWS --password-stdin ${self:custom.ecrName}
-      - npm run docker:build-base && npm run docker:build-lyte
+      - npm run docker:build-lyte
       - docker push ${self:custom.ecr.images.webImage}
       - docker push ${self:custom.ecr.images.prosodyImage}
       - docker push ${self:custom.ecr.images.jvbImage}

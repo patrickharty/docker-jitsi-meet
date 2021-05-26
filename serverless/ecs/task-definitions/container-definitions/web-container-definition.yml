@@ -11,6 +11,8 @@ LogConfiguration:
     awslogs-region: !Ref AWS::Region
     awslogs-stream-prefix: ecs-web
 Essential: true
+Privileged: false
+ReadonlyRootFilesystem: false
 Cpu: ${self:custom.webCpu}
 PortMappings: ${file(./serverless/ecs/task-definitions/container-definitions/port-mappings/jitsi-web-port-map.yml)}
 Environment:
@@ -29,7 +31,7 @@ Environment:
   - name: LETSENCRYPT_EMAIL
     value: ${env:LETSENCRYPT_EMAIL}
   - name: LETSENCRYPT_USE_STAGING
-    value: ''
+    value: ${env:LETSENCRYPT_USE_STAGING}
   - name: PUBLIC_URL
     value: ${env:PUBLIC_URL}
   - name: TZ

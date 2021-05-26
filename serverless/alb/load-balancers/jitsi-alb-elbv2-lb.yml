@@ -8,6 +8,7 @@ Properties:
   Scheme: internet-facing
   SecurityGroups:
     - ${self:custom.coreStack.outputs.webAccessSecurityGroup}
+    - !Ref JitsiECSSecurityGroup
   Subnets:
     - ${self:custom.coreStack.outputs.publicSubnet1}
     - ${self:custom.coreStack.outputs.publicSubnet2}

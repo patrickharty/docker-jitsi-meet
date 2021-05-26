@@ -3,6 +3,14 @@ Properties:
   GroupName: !Sub ${AWS::StackName}-sg
   GroupDescription: Security Group for the Jitsi instance
   VpcId: ${self:custom.coreStack.outputs.vpc}
-  Tags:
-    - Key: Name
-      Value: !Sub ${AWS::StackName}-sg
+  SecurityGroupIngress:
+  - IpProtocol: udp
+    FromPort: 10000
+    ToPort: 10000
+    CidrIp: 0.0.0.0/0
+    Description: Grants UDP access to resources in the group
+  - IpProtocol: tcp
+    FromPort: 4443
+    ToPort: 4443
+    CidrIp: 0.0.0.0/0
+    Description: Grants TCP access to resources in the group

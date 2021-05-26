@@ -10,5 +10,5 @@ Resources:
   # Jitsi Load balancer
   JitsiALBLoadBalancer: ${file(./serverless/alb/load-balancers/jitsi-alb-elbv2-lb.yml)}
   JitsiALBTargetGroup: ${file(./serverless/alb/target-groups/jitsi-alb-tg.yml)}
-  JitsiALBListener: ${file(./serverless/alb/listeners/jitsi-alb-listener.yml)}    
-
+  JitsiALBHTTPListener: ${file(./serverless/alb/listeners/jitsi-alb-http-listener.yml)}
+  JitsiALBHTTPSListener: ${file(./serverless/alb/listeners/jitsi-alb-https-listener.yml)}    

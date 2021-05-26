@@ -1,5 +1,5 @@
 Type: AWS::ECS::Service
-DependsOn: JitsiALBListener
+DependsOn: JitsiALBHTTPSListener
 Properties:
   ServiceName: !Sub ${self:custom.ecsServiceName}
   Cluster: !Ref JitsiECSCluster
@@ -18,5 +18,5 @@ Properties:
         - ${self:custom.coreStack.outputs.webAccessSecurityGroup}
   LoadBalancers:
     - ContainerName: ${self:custom.webContainerName}
-      ContainerPort: ${self:custom.webContainerHttpPort}
+      ContainerPort: ${self:custom.webContainerHttpsPort}
       TargetGroupArn: !Ref JitsiALBTargetGroup

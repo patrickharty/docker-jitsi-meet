@@ -11,8 +11,24 @@ LogConfiguration:
     awslogs-region: !Ref AWS::Region
     awslogs-stream-prefix: ecs-jicofo
 Essential: true
+Privileged: false
+ReadonlyRootFilesystem: false
 Cpu: ${self:custom.jicofoCpu}
 Environment:
+  - name: AUTH_TYPE
+    value: ''
+  - name: BRIDGE_AVG_PARTICIPANT_STRESS
+    value: ''
+  - name: BRIDGE_STRESS_THRESHOLD
+    value: ''
+  - name: ENABLE_AUTH
+    value: ''
+  - name: ENABLE_AUTO_OWNER
+    value: ''
+  - name: ENABLE_CODEC_VP8
+    value: ''
+  - name: ENABLE_CODEC_VP9
+    value: ''
   - name: ENABLE_CODEC_H264
     value: ''
   - name: ENABLE_RECORDING
@@ -67,12 +83,3 @@ Environment:
     value: ${env:XMPP_MUC_DOMAIN}
   - name: XMPP_SERVER
     value: ${env:XMPP_SERVER}
-  
-  
-
-            
-# Links: 
-#   - !Join
-#     - ':'
-#     - - ${self:custom.prosodyContainerName}
-#       - ${self:custom.prosodyHostName}

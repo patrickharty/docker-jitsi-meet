@@ -2,6 +2,8 @@ Name: ${self:custom.prosodyContainerName}
 Image: !Sub ${self:custom.ecr.images.prosodyImage}
 MemoryReservation: ${self:custom.prosodySoftLimit}
 Essential: true
+Privileged: false
+ReadonlyRootFilesystem: false
 LogConfiguration:
   LogDriver: awslogs
   Options:
@@ -68,7 +70,7 @@ Environment:
   - name: XMPP_INTERNAL_MUC_MODULES
     value: ''
   - name: XMPP_RECORDER_DOMAIN
-    value: ''
+    value: ${env:XMPP_RECORDER_DOMAIN}
   - name: XMPP_CROSS_DOMAIN
     value: ''
   - name: JICOFO_COMPONENT_SECRET

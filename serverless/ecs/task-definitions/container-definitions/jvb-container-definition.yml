@@ -4,7 +4,9 @@ DependsOn:
     ContainerName: ${self:custom.prosodyContainerName}
 Image: !Sub ${self:custom.ecr.images.jvbImage}
 MemoryReservation: ${self:custom.jvbSoftLimit}
-Essential: false
+Essential: true
+Privileged: false
+ReadonlyRootFilesystem: false
 Cpu: ${self:custom.jvbCpu}
 LogConfiguration:
   LogDriver: awslogs
